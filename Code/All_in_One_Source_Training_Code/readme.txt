@@ -1,0 +1,3 @@
+This folder contains codes for implementing the 3-D-SRNet on source datasets pavia, Indian pines and salinas. For each source dataset, training and test set is prepared for different values of overlapping ratios. For each overlapping ratio, a sub model minus the fully connected layers is saved for transfer learning. Test accuracy is obtained for each overlapping ratio for the source dataset used.
+
+Folder also has Source_Model_Utils python file for extracting cubes, forming training and test samples from each class, preparing data for training, the underlying 3-D-SRNet model used to train and the function that does the actual training and printing the test accuracies.

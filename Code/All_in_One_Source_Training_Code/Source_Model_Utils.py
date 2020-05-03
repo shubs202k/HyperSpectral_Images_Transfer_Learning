@@ -2,19 +2,16 @@ import numpy as np
 import pandas as pd
 import math
 import sklearn.metrics
-
-from tensorflow import keras
-from tensorflow.keras.callbacks import ModelCheckpoint
 import warnings
 warnings.filterwarnings('ignore')
 
 from sklearn.preprocessing import OneHotEncoder
-
+from tensorflow import keras
+from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Input, Add, Dense, Activation, ZeroPadding3D, BatchNormalization, Flatten, Conv3D, AveragePooling3D, MaxPooling3D, GlobalMaxPooling3D
 from tensorflow.keras.models import Model
 from tensorflow.keras.initializers import glorot_uniform
 from tensorflow.keras import regularizers
-
 
 import logging
 logging.getLogger('tensorflow').setLevel(logging.ERROR)
@@ -198,7 +195,8 @@ def Train(overlap_ratio_List,
           epochs_list,
           batch_size_list,
           data_name,
-          Verbosity):
+          Verbosity,
+          LR = 0.0001):
 
     Accu_Table = [[None for l in range(2)] for n in range(len(overlap_ratio_List)+1)]
     for k in range(1,len(overlap_ratio_List)+1):
@@ -228,7 +226,7 @@ def Train(overlap_ratio_List,
         model_checkpoint = ModelCheckpoint(
             '..\\..\\Trained Models\\Full_Model\\'+data_name+'\\Full_Model_best_'+ data_name +'_overlap_ratio_' + str(int(overlap_ratio * 100)) + '_percent.h5',
             monitor='val_categorical_accuracy', verbose=1, save_best_only=True)
-        model_1.compile(optimizer=keras.optimizers.SGD(lr=0.0001, decay=1e-5, momentum=0.9, nesterov=True),
+        model_1.compile(optimizer=keras.optimizers.SGD(lr=LR, decay=1e-5, momentum=0.9, nesterov=True),
                         loss='categorical_crossentropy', metrics=['categorical_accuracy'])
         model_1.fit(Xtrain, Ytrain, epochs=epochs_list[i], batch_size=batch_size_list[i],
                     validation_data=[Xtest, Ytest], verbose=Verbosity , callbacks=[model_checkpoint])

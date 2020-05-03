@@ -140,7 +140,8 @@ def Transfer(overlap_ratio_List_for_Target,
              channel,
              Source_data_name,
              Target_data_name,
-             Verbosity):
+             Verbosity,
+             LR = 0.0001):
     Accu_Table = [[None for l in range(len(overlap_ratio_List_for_Target) + 1)] for n in
                   range(len(overlap_ratio_List_for_Source) + 1)]
     for k in range(1, len(overlap_ratio_List_for_Target) + 1):
@@ -186,11 +187,10 @@ def Transfer(overlap_ratio_List_for_Target,
                 '_With_source_data_as_' + Source_data_name + '_overlap_ratio_' +
                 str(int(overlap_ratio_List_for_Source[m])) + '_percent.h5',
                 monitor='val_categorical_accuracy', verbose=1, save_best_only=True)
-            model_1.compile(optimizer=keras.optimizers.SGD(lr=0.0001, decay=1e-5, momentum=0.9, nesterov=True),
+            model_1.compile(optimizer=keras.optimizers.SGD(lr=LR, decay=1e-5, momentum=0.9, nesterov=True),
                             loss='categorical_crossentropy', metrics=['categorical_accuracy'])
-            model_1.fit(Xtrain_transfer, Ytrain, epochs=epochs_list[i], batch_size=batch_size_list[i], validation_data=(Xtest_transfer, Ytest),
-                        verbose=Verbosity,
-                        callbacks=[model_checkpoint])
+            model_1.fit(Xtrain_transfer, Ytrain, epochs=epochs_list[i], batch_size=batch_size_list[i],
+                        validation_data=[Xtest_transfer, Ytest], verbose=Verbosity, callbacks=[model_checkpoint])
 
             preds = model_1.evaluate(Xtest_transfer, Ytest)
             # print ("Loss = " + str(preds[0]))
@@ -208,4 +208,5 @@ def Transfer(overlap_ratio_List_for_Target,
                 "==============================================================================================================================")
             print(counts)
     df = pd.DataFrame.from_records(Accu_Table)
+
     return df
